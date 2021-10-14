@@ -1,7 +1,8 @@
 enum ActionKind {
     Walking,
     Idle,
-    Jumping
+    Jumping,
+    drowning
 }
 namespace SpriteKind {
     export const follower = SpriteKind.create()
@@ -38,6 +39,22 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`sigh down`, function (sprite,
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite3, otherSprite) {
     if (true) {
         enemy_1.destroy(effects.fire, 1000)
+    }
+})
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    CodeSequence += 1
+    if (CodeSequence == 1) {
+        controller.moveSprite(mySprite)
+        music.magicWand.play()
+    } else if (CodeSequence == 2) {
+        controller.moveSprite(mySprite2)
+        music.baDing.play()
+    } else if (CodeSequence == 3) {
+        controller.moveSprite(mySprite3)
+        music.pewPew.play()
+    } else {
+        music.bigCrash.play()
+        CodeSequence = 0
     }
 })
 statusbars.onZero(StatusBarKind.Health, function (status2) {
@@ -275,7 +292,16 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+function aqua_attack () {
+    animation.runImageAnimation(
+    mySprite,
+    assets.animation`aqua staff use right`,
+    200,
+    false
+    )
+}
 let projectile2: Sprite = null
+let CodeSequence = 0
 let statusbar: StatusBarSprite = null
 let enemy_1: Sprite = null
 let mySprite3: Sprite = null
@@ -310,8 +336,6 @@ controller.moveSprite(mySprite)
 mySprite.setStayInScreen(true)
 mySprite2.follow(mySprite, 85)
 mySprite3.follow(mySprite, 80)
-mySprite2.x += -1
-mySprite3.x += 1
 statusbar = statusbars.create(20, 4, StatusBarKind.Health)
 statusbar.attachToSprite(mySprite)
 statusbar.setBarBorder(1, 12)
