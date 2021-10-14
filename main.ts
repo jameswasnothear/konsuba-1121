@@ -41,7 +41,12 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite3, ot
     }
 })
 statusbars.onZero(StatusBarKind.Health, function (status2) {
-    game.over(false, effects.splatter)
+    game.setDialogTextColor(15)
+    statusbar.attachToSprite(enemy_1)
+    game.setDialogFrame(assets.image`eris`)
+    game.setDialogCursor(assets.image`curcer 1`)
+    game.showLongText("whelp you managed to die again, I'm sorry you have to deal with aqua", DialogLayout.Full)
+    game.over(false, effects.clouds)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (enemy_1.x == mySprite2.x) {
@@ -64,9 +69,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         }
     }
 })
-statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 50, function (status) {
-    music.wawawawaa.play()
-})
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
     mySprite2,
@@ -86,6 +88,9 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     200,
     true
     )
+})
+statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 50, function (status) {
+    music.wawawawaa.play()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherSprite2) {
     enemy_1.follow(mySprite, 40)
