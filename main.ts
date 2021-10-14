@@ -1,3 +1,8 @@
+enum ActionKind {
+    Walking,
+    Idle,
+    Jumping
+}
 namespace SpriteKind {
     export const follower = SpriteKind.create()
     export const enviroment_1 = SpriteKind.create()
@@ -35,14 +40,12 @@ sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite3, ot
         enemy_1.destroy(effects.fire, 1000)
     }
 })
-controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-	
-})
 statusbars.onZero(StatusBarKind.Health, function (status2) {
     game.over(false, effects.splatter)
 })
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     if (enemy_1.x == mySprite2.x) {
+        mySprite.sayText("expulsion ", 500, true)
         animation.runImageAnimation(
         mySprite2,
         assets.animation`explotion`,
@@ -57,11 +60,12 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             500,
             false
             )
+            music.bigCrash.play()
         }
     }
 })
 statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.LTE, statusbars.ComparisonType.Percentage, 50, function (status) {
-    music.sonar.play()
+    music.wawawawaa.play()
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -192,6 +196,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherS
     false
     )
     statusbar.value += -5
+    music.smallCrash.play()
     pause(1000)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -217,11 +222,30 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 scene.onOverlapTile(SpriteKind.Player, assets.tile`triger`, function (sprite, location) {
     story.startCutscene(function () {
         story.cancelSpriteMovement(sprite)
+        enemy_1 = sprites.create(img`
+            . . . . . . f f f f . . . . . . 
+            . . . . f f f 2 2 f f f . . . . 
+            . . . f f f 2 2 2 2 f f f . . . 
+            . . f f f e e e e e e f f f . . 
+            . . f f e 2 2 2 2 2 2 e e f . . 
+            . . f e 2 f f f f f f 2 e f . . 
+            . . f f f f e e e e f f f f . . 
+            . f f e f b f 4 4 f b f e f f . 
+            . f e e 4 1 f d d f 1 4 e e f . 
+            . . f e e d d d d d d e e f . . 
+            . . . f e e 4 4 4 4 e e f . . . 
+            . . e 4 f 2 2 2 2 2 2 f 4 e . . 
+            . . 4 d f 2 2 2 2 2 2 f d 4 . . 
+            . . 4 4 f 4 4 5 5 4 4 f 4 4 . . 
+            . . . . . f f f f f f . . . . . 
+            . . . . . f f . . f f . . . . . 
+            `, SpriteKind.Enemy)
         tiles.placeOnTile(enemy_1, tiles.getTileLocation(56, 5))
         scene.cameraShake(4, 500)
         scene.cameraFollowSprite(enemy_1)
         pause(1000)
         scene.cameraFollowSprite(mySprite)
+        music.spooky.play()
     })
     story.cancelCurrentCutscene()
     tiles.replaceAllTiles(assets.tile`triger`, sprites.castle.tilePath5)
@@ -252,11 +276,6 @@ let enemy_1: Sprite = null
 let mySprite3: Sprite = null
 let mySprite2: Sprite = null
 let mySprite: Sprite = null
-class ActionKind {
-    static Walking = 0
-    static Idle = 1
-    static Jumping = 2
-}
 mySprite = sprites.create(assets.image`darkness0`, SpriteKind.Player)
 mySprite2 = sprites.create(assets.image`migamii`, SpriteKind.follower)
 mySprite3 = sprites.create(assets.image`aqua`, SpriteKind.follower)
