@@ -1,5 +1,5 @@
 {
-    "name": "konsuba 1.12.1 #2",
+    "name": "konsuba 1.14.2",
     "description": "",
     "dependencies": {
         "device": "*",
@@ -8,7 +8,9 @@
         "tilemaps": "github:microsoft/pxt-tilemaps#v1.12.0",
         "pxt-circuit-playground-character-icons": "github:adafruit/Circuit-Playground-Character-Icons#v0.0.8",
         "arcade-story": "github:microsoft/arcade-storytelling#v1.0.3",
-        "arcade-character-animations": "github:microsoft/arcade-character-animations#v0.0.2"
+        "arcade-character-animations": "github:microsoft/arcade-character-animations#v0.0.2",
+        "arcade-sprite-data": "github:microsoft/arcade-sprite-data#v0.1.0",
+        "darts": "*"
     },
     "files": [
         "main.blocks",

@@ -8,6 +8,7 @@ namespace SpriteKind {
     export const follower = SpriteKind.create()
     export const enviroment_1 = SpriteKind.create()
     export const text_block = SpriteKind.create()
+    export const atteck_magic1 = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
@@ -45,16 +46,22 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     CodeSequence += 1
     if (CodeSequence == 1) {
         controller.moveSprite(mySprite)
+        statusbar.attachToSprite(mySprite)
+        scene.cameraFollowSprite(mySprite)
         music.magicWand.play()
     } else if (CodeSequence == 2) {
         controller.moveSprite(mySprite2)
+        statusbar.attachToSprite(mySprite2)
+        scene.cameraFollowSprite(mySprite2)
         music.baDing.play()
     } else if (CodeSequence == 3) {
         controller.moveSprite(mySprite3)
+        statusbar.attachToSprite(mySprite3)
+        scene.cameraFollowSprite(mySprite3)
         music.pewPew.play()
-    } else {
+    } else if (CodeSequence == 4) {
         music.bigCrash.play()
-        CodeSequence = 0
+        CodeSequence = 1
     }
 })
 statusbars.onZero(StatusBarKind.Health, function (status2) {
@@ -65,8 +72,20 @@ statusbars.onZero(StatusBarKind.Health, function (status2) {
     game.showLongText("whelp you managed to die again, I'm sorry you have to deal with aqua", DialogLayout.Full)
     game.over(false, effects.clouds)
 })
+function aqua_attack2 () {
+    if (controller.A.isPressed() && CodeSequence == 3) {
+        animation.runImageAnimation(
+        mySprite3,
+        assets.animation`aqua staff use right`,
+        200,
+        false
+        )
+        projectile = sprites.createProjectileFromSide(assets.image`wave`, 50, 50)
+        projectile.follow(enemy_1)
+    }
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (enemy_1.x == mySprite2.x) {
+    if (enemy_1.x == mySprite2.x || enemy_1.y == mySprite2.y) {
         mySprite.sayText("expulsion ", 500, true)
         animation.runImageAnimation(
         mySprite2,
@@ -84,6 +103,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             )
             music.bigCrash.play()
         }
+    } else if (enemy_1.x == mySprite3.x || enemy_1.y == mySprite3.y) {
+        aqua_attack2()
     }
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -107,7 +128,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     )
 })
 statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.GT, statusbars.ComparisonType.Percentage, 50, function (status) {
-    music.wawawawaa.play()
+    music.siren.play()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherSprite2) {
     enemy_1.follow(mySprite, 40)
@@ -292,15 +313,8 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
-function aqua_attack () {
-    animation.runImageAnimation(
-    mySprite,
-    assets.animation`aqua staff use right`,
-    200,
-    false
-    )
-}
 let projectile2: Sprite = null
+let projectile: Sprite = null
 let CodeSequence = 0
 let statusbar: StatusBarSprite = null
 let enemy_1: Sprite = null
