@@ -11,10 +11,9 @@ namespace SpriteKind {
     export const atteck_magic1 = SpriteKind.create()
 }
 sprites.onCreated(SpriteKind.Enemy, function (sprite) {
-    enemy_HP = statusbars.create(20, 4, StatusBarKind.EnemyHealth)
+    enemy_HP = statusbars.create(25, 4, StatusBarKind.EnemyHealth)
     enemy_HP.value = 100
-    enemy_HP.attachToSprite(enemy_1)
-    enemy_HP.setColor(7, 2, 3)
+    enemy_HP.setColor(2, 4, 3)
     enemy_HP.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
     enemy_HP.setBarBorder(1, 12)
 })
@@ -71,10 +70,9 @@ controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     swiching_charicters()
 })
 statusbars.onZero(StatusBarKind.Health, function (status2) {
-    game.setDialogTextColor(15)
+    game.setDialogTextColor(5)
     statusbar.attachToSprite(enemy_1)
     game.setDialogFrame(assets.image`eris`)
-    game.setDialogCursor(assets.image`curcer 1`)
     game.showLongText("whelp you managed to die again, I'm sorry you have to deal with aqua", DialogLayout.Full)
     game.over(false, effects.clouds)
 })
@@ -100,6 +98,9 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     }
     if (CodeSequence == 3 && controller.A.isPressed()) {
         aqua_attack2()
+    } else {
+        aqua_attack2()
+        migamii_attack1()
     }
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
@@ -233,7 +234,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherS
     200,
     false
     )
-    statusbar.value += -10
+    statusbar.value += -7
     music.smallCrash.play()
     pause(1000)
 })
@@ -379,6 +380,7 @@ statusbar.setLabel("HP")
 statusbar.setColor(7, 2, 3)
 statusbar.attachToSprite(darkness)
 statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+enemy_HP.attachToSprite(enemy_1)
 tiles.createSpritesOnTiles(sprites.builtin.forestTiles0, SpriteKind.enviroment_1)
 tiles.coverAllTiles(assets.tile`transparency16`, sprites.castle.tileGrass1)
 tiles.coverAllTiles(sprites.builtin.forestTiles4, sprites.castle.tileGrass3)
