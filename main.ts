@@ -10,21 +10,29 @@ namespace SpriteKind {
     export const text_block = SpriteKind.create()
     export const atteck_magic1 = SpriteKind.create()
 }
+sprites.onCreated(SpriteKind.Enemy, function (sprite) {
+    enemy_HP = statusbars.create(20, 4, StatusBarKind.EnemyHealth)
+    enemy_HP.value = 100
+    enemy_HP.attachToSprite(enemy_1)
+    enemy_HP.setColor(7, 2, 3)
+    enemy_HP.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
+    enemy_HP.setBarBorder(1, 12)
+})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
-    mySprite2,
+    MIGAMII,
     assets.animation`walking up`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite,
+    darkness,
     assets.animation`darkness walking up`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite3,
+    aqua,
     assets.animation`aqua walking up`,
     200,
     true
@@ -35,34 +43,32 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`sigh down`, function (sprite,
     game.splash("to the evil castle ")
     pause(100)
     story.clearAllText()
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(132, 13))
+    tiles.placeOnTile(darkness, tiles.getTileLocation(132, 13))
 })
-sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite3, otherSprite) {
-    if (true) {
-        enemy_1.destroy(effects.fire, 1000)
-    }
-})
-controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
-    CodeSequence += 1
-    if (CodeSequence == 1) {
-        controller.moveSprite(mySprite)
-        statusbar.attachToSprite(mySprite)
-        scene.cameraFollowSprite(mySprite)
-        music.magicWand.play()
-    } else if (CodeSequence == 2) {
-        controller.moveSprite(mySprite2)
-        statusbar.attachToSprite(mySprite2)
-        scene.cameraFollowSprite(mySprite2)
-        music.baDing.play()
-    } else if (CodeSequence == 3) {
-        controller.moveSprite(mySprite3)
-        statusbar.attachToSprite(mySprite3)
-        scene.cameraFollowSprite(mySprite3)
-        music.pewPew.play()
-    } else if (CodeSequence == 4) {
+function migamii_attack1 () {
+    if ((enemy_1.x == MIGAMII.x || enemy_1.y == MIGAMII.y) && (controller.A.isPressed() && CodeSequence == 2)) {
+        MIGAMII.sayText("expulsion ", 2000, true)
+        animation.runImageAnimation(
+        MIGAMII,
+        assets.animation`explotion`,
+        500,
+        false
+        )
+        exploshion_1 = sprites.createProjectileFromSprite(assets.image`explshon`, enemy_1, 0, 0)
+        animation.runImageAnimation(
+        exploshion_1,
+        assets.animation`boom`,
+        500,
+        false
+        )
         music.bigCrash.play()
-        CodeSequence = 1
+        if (exploshion_1.overlapsWith(enemy_1)) {
+            enemy_HP.value += -100
+        }
     }
+}
+controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
+    swiching_charicters()
 })
 statusbars.onZero(StatusBarKind.Health, function (status2) {
     game.setDialogTextColor(15)
@@ -73,55 +79,44 @@ statusbars.onZero(StatusBarKind.Health, function (status2) {
     game.over(false, effects.clouds)
 })
 function aqua_attack2 () {
-    if (controller.A.isPressed() && CodeSequence == 3) {
+    if ((enemy_1.x == aqua.x || enemy_1.y == aqua.y) && (controller.A.isPressed() && CodeSequence == 3)) {
         animation.runImageAnimation(
-        mySprite3,
+        aqua,
         assets.animation`aqua staff use right`,
         200,
         false
         )
-        projectile = sprites.createProjectileFromSide(assets.image`wave`, 50, 50)
-        projectile.follow(enemy_1)
+        wave_attack = sprites.createProjectileFromSprite(assets.image`wave`, aqua, 0, 0)
+        wave_attack.follow(enemy_1)
+        if (wave_attack.overlapsWith(enemy_1)) {
+            enemy_HP.value += -30
+            wave_attack.destroy(effects.bubbles, 500)
+        }
     }
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (enemy_1.x == mySprite2.x || enemy_1.y == mySprite2.y) {
-        mySprite.sayText("expulsion ", 500, true)
-        animation.runImageAnimation(
-        mySprite2,
-        assets.animation`explotion`,
-        500,
-        false
-        )
-        if (true) {
-            projectile2 = sprites.createProjectileFromSprite(assets.image`explshon`, enemy_1, 0, 0)
-            animation.runImageAnimation(
-            projectile2,
-            assets.animation`boom`,
-            500,
-            false
-            )
-            music.bigCrash.play()
-        }
-    } else if (enemy_1.x == mySprite3.x || enemy_1.y == mySprite3.y) {
+    if (CodeSequence == 2 && controller.A.isPressed()) {
+        migamii_attack1()
+    }
+    if (CodeSequence == 3 && controller.A.isPressed()) {
         aqua_attack2()
     }
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
-    mySprite2,
+    MIGAMII,
     assets.animation`walking west`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite,
+    darkness,
     assets.animation`waking left`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite3,
+    aqua,
     assets.animation`aqua walking left`,
     200,
     true
@@ -131,7 +126,7 @@ statusbars.onStatusReached(StatusBarKind.Health, statusbars.StatusComparison.GT,
     music.siren.play()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherSprite2) {
-    enemy_1.follow(mySprite, 40)
+    enemy_1.follow(darkness, 40)
     animation.runImageAnimation(
     enemy_1,
     [img`
@@ -238,25 +233,29 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite2, otherS
     200,
     false
     )
-    statusbar.value += -5
+    statusbar.value += -10
     music.smallCrash.play()
     pause(1000)
 })
+statusbars.onZero(StatusBarKind.EnemyHealth, function (status) {
+    enemy_1.destroy()
+    enemy_HP.destroy()
+})
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
-    mySprite2,
+    MIGAMII,
     assets.animation`walking east`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite,
+    darkness,
     assets.animation`walking right`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite3,
+    aqua,
     assets.animation`aqua walking right`,
     200,
     true
@@ -287,43 +286,66 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`triger`, function (sprite, lo
         scene.cameraShake(4, 500)
         scene.cameraFollowSprite(enemy_1)
         pause(1000)
-        scene.cameraFollowSprite(mySprite)
+        scene.cameraFollowSprite(darkness)
         music.spooky.play()
     })
     story.cancelCurrentCutscene()
     tiles.replaceAllTiles(assets.tile`triger`, sprites.castle.tilePath5)
 })
+function swiching_charicters () {
+    CodeSequence += 1
+    if (CodeSequence == 1) {
+        controller.moveSprite(darkness)
+        statusbar.attachToSprite(darkness)
+        scene.cameraFollowSprite(darkness)
+        music.magicWand.play()
+    } else if (CodeSequence == 2) {
+        controller.moveSprite(MIGAMII)
+        statusbar.attachToSprite(MIGAMII)
+        scene.cameraFollowSprite(MIGAMII)
+        music.baDing.play()
+    } else if (CodeSequence == 3) {
+        controller.moveSprite(aqua)
+        statusbar.attachToSprite(aqua)
+        scene.cameraFollowSprite(aqua)
+        music.pewPew.play()
+    } else if (CodeSequence == 4) {
+        music.bigCrash.play()
+        CodeSequence = 1
+    }
+}
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     animation.runImageAnimation(
-    mySprite2,
+    MIGAMII,
     assets.animation`migamii walking down`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite,
+    darkness,
     assets.animation`darkness walking down`,
     200,
     true
     )
     animation.runImageAnimation(
-    mySprite3,
+    aqua,
     assets.animation`aqua walking down 1`,
     200,
     true
     )
 })
-let projectile2: Sprite = null
-let projectile: Sprite = null
+let wave_attack: Sprite = null
+let exploshion_1: Sprite = null
 let CodeSequence = 0
+let enemy_HP: StatusBarSprite = null
 let statusbar: StatusBarSprite = null
 let enemy_1: Sprite = null
-let mySprite3: Sprite = null
-let mySprite2: Sprite = null
-let mySprite: Sprite = null
-mySprite = sprites.create(assets.image`darkness0`, SpriteKind.Player)
-mySprite2 = sprites.create(assets.image`migamii`, SpriteKind.follower)
-mySprite3 = sprites.create(assets.image`aqua`, SpriteKind.follower)
+let aqua: Sprite = null
+let MIGAMII: Sprite = null
+let darkness: Sprite = null
+darkness = sprites.create(assets.image`darkness0`, SpriteKind.Player)
+MIGAMII = sprites.create(assets.image`migamii`, SpriteKind.follower)
+aqua = sprites.create(assets.image`aqua`, SpriteKind.follower)
 enemy_1 = sprites.create(img`
     . . . . . . f f f f . . . . . . 
     . . . . f f f 2 2 f f f . . . . 
@@ -345,17 +367,17 @@ enemy_1 = sprites.create(img`
 enemy_1.setPosition(13, 123)
 tiles.setTilemap(tilemap`level1`)
 scene.setBackgroundColor(7)
-scene.cameraFollowSprite(mySprite)
-controller.moveSprite(mySprite)
-mySprite.setStayInScreen(true)
-mySprite2.follow(mySprite, 85)
-mySprite3.follow(mySprite, 80)
+scene.cameraFollowSprite(darkness)
+controller.moveSprite(darkness)
+darkness.setStayInScreen(true)
+MIGAMII.follow(darkness, 85)
+aqua.follow(darkness, 80)
 statusbar = statusbars.create(20, 4, StatusBarKind.Health)
-statusbar.attachToSprite(mySprite)
+statusbar.attachToSprite(darkness)
 statusbar.setBarBorder(1, 12)
 statusbar.setLabel("HP")
 statusbar.setColor(7, 2, 3)
-statusbar.attachToSprite(mySprite)
+statusbar.attachToSprite(darkness)
 statusbar.setStatusBarFlag(StatusBarFlag.SmoothTransition, true)
 tiles.createSpritesOnTiles(sprites.builtin.forestTiles0, SpriteKind.enviroment_1)
 tiles.coverAllTiles(assets.tile`transparency16`, sprites.castle.tileGrass1)
